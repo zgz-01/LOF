@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">基金详情</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            background: #0f1923;
+            color: #e0e6ed;
+            padding: 16px;
+            min-height: 100vh;
+        }
+        .back { margin-bottom: 16px; }
+        .back a { color: #4fc3f7; text-decoration: none; font-size: 14px; }
+        .back a:hover { text-decoration: underline; }
+        .header { margin-bottom: 20px; }
+        .header h1 { font-size: 22px; }
+        .header .code { font-size: 13px; color: #546e7a; }
+        .premium-box {
+            display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .premium-item {
+            background: #15202b; border: 1px solid #1e3a5f;
+            border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 100px;
+        }
+        .premium-item .label { font-size: 12px; color: #78909c; margin-bottom: 4px; }
+        .premium-item .value { font-size: 26px; font-weight: 700; }
+        .premium-item .value.red { color: #ef5350; }
+        .premium-item .value.green { color: #66bb6a; }
+        .premium-item .value.gray { color: #546e7a; }
+        .section { margin-bottom: 20px; }
+        .section h3 { font-size: 16px; color: #4fc3f7; margin-bottom: 8px; }
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+        }
+        .info-item {
+            background: #15202b; border: 1px solid #1e3a5f;
+            border-radius: 8px; padding: 10px 14px;
+        }
+        .info-item .key { font-size: 11px; color: #546e7a; }
+        .info-item .val { font-size: 14px; font-weight: 500; margin-top: 2px; }
+        .loading { text-align: center; padding: 40px; color: #546e7a; }
+        .error { text-align: center; padding: 40px; color: #ef5350; }
+    </style>
+</head>
+<body>
+    <div class="back"><a href="/">← 返回排行</a></div>
+    <div class="header">
+        <h1 id="fundName">加载中...</h1>
+        <div class="code" id="fundCode"></div>
+    </div>
+
+    <div class="premium-box" id="premiumBox"></div>
+
+    <div class="section">
+        <h3>基金信息</h3>
+        <div class="info-grid" id="fundInfo"></div>
+    </div>
+
+    <div class="section">
+        <h3>参考数据</h3>
+        <div class="info-grid" id="refData"></div>
+    </div>
+
+    <div class="loading" id="loading">加载中...</div>
+
+    <script>
+        const code = '{{ code }}';
+        
+        function formatPremium(pct) {
+            if (pct === null || pct === undefined) return '-';
+            const sign = pct > 0 ? '+' : '';
+            return sign + pct.toFixed(2) + '%';
+        }
+
+        function getColorClass(pct) {
+            if (pct === null) return 'gray';
+            if (pct > 5) return 'red';
+            return pct > 0 ? 'green' : 'gray';
+        }
+
+        async function loadDetail() {
+            try {
+                const resp = await fetch(`/api/fund/${code}`);
+                const data = await resp.json();
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.error) {
+                    document.getElementById('fundName').textContent = '❌ ' + data.error;
+                    return;
+                }
+
+                document.getElementById('fundName').textContent = data.name || code;
+                document.getElementById('fundCode').textContent = data.code;
+                document.getElementById('pageTitle').textContent = `${data.name || code} - LOF溢价监控`;
+
+                // 溢价展示
+                const p = data.premium || {};
+                const premiumBox = document.getElementById('premiumBox');
+                let html = '';
+
+                const items = [
+                    { label: '官方EST溢价', val: p.official },
+                    { label: '参考EST溢价', val: p.fair },
+                    { label: '实时EST溢价', val: p.realtime },
+                ];
+                items.forEach(item => {
+                    const cls = getColorClass(item.val);
+                    html += `
+                        <div class="premium-item">
+                            <div class="label">${item.label}</div>
+                            <div class="value ${cls}">${formatPremium(item.val)}</div>
+                        </div>
+                    `;
+                });
+                premiumBox.innerHTML = html;
+
+                // 基金信息
+                const fundInfo = document.getElementById('fundInfo');
+                const cfg = data.config || {};
+                fundInfo.innerHTML = `
+                    <div class="info-item"><div class="key">跟踪指数</div><div class="val">${cfg.index_name || '-'}</div></div>
+                    <div class="info-item"><div class="key">地区</div><div class="val">${cfg.region || '-'}</div></div>
+                    <div class="info-item"><div class="key">仓位</div><div class="val">${cfg.position_ratio ? (cfg.position_ratio * 100) + '%' : '-'}</div></div>
+                    <div class="info-item"><div class="key">币种</div><div class="val">${cfg.currency || '-'}</div></div>
+                    <div class="info-item"><div class="key">官方净值</div><div class="val">${data.nav?.official || '-'}</div></div>
+                    <div class="info-item"><div class="key">净值日期</div><div class="val">${data.nav?.date || '-'}</div></div>
+                `;
+
+                // 参考数据
+                const refData = document.getElementById('refData');
+                let refHtml = '';
+                
+                const yahoo = data.yahoo;
+                if (yahoo) {
+                    refHtml += `
+                        <div class="info-item"><div class="key">${yahoo.symbol || '指数'}</div><div class="val">${yahoo.price || '-'} (${yahoo.change_pct || 0}%)</div></div>
+                    `;
+                }
+                
+                const future = data.future;
+                if (future) {
+                    refHtml += `
+                        <div class="info-item"><div class="key">期货 ${future.symbol || ''}</div><div class="val">${future.price || '-'} (${future.change_pct || 0}%)</div></div>
+                    `;
+                }
+                
+                if (data.cny_rate) {
+                    refHtml += `
+                        <div class="info-item"><div class="key">USCNY中间价</div><div class="val">${data.cny_rate}</div></div>
+                    `;
+                }
+
+                refData.innerHTML = refHtml || '<div class="info-item"><div class="val" style="color:#546e7a">暂无参考数据</div></div>';
+
+            } catch (e) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('fundName').textContent = '❌ 加载失败';
+                document.getElementById('fundCode').textContent = e.message;
+            }
+        }
+
+        loadDetail();
+    </script>
+</body>
+</html>

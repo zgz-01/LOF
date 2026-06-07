@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务状态 - LOF溢价监控</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #0f1923; color: #e0e6ed; padding: 20px;
+        }
+        h1 { font-size: 20px; color: #4fc3f7; margin-bottom: 16px; }
+        .back { margin-bottom: 16px; }
+        .back a { color: #4fc3f7; text-decoration: none; font-size: 14px; }
+        .card {
+            background: #15202b; border: 1px solid #1e3a5f; border-radius: 10px;
+            padding: 16px; margin-bottom: 12px;
+        }
+        .card .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+        .card .row .key { color: #78909c; }
+        .card .row .val { font-weight: 500; }
+        .ok { color: #66bb6a; }
+        .warn { color: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="back"><a href="/">← 返回排行</a></div>
+    <h1>🔧 服务状态</h1>
+
+    <div class="card">
+        <div class="row"><span class="key">数据源API</span><span class="val">{{ status.get('status', '未知') }}</span></div>
+        <div class="row"><span class="key">缓存时间</span><span class="val">{{ status.get('cached_at', '-')[:19] }}</span></div>
+        <div class="row"><span class="key">基金数量</span><span class="val">{{ status.get('funds_count', 0) }}</span></div>
+        <div class="row"><span class="key">正在更新</span><span class="val">{{ '是' if status.get('updating') else '否' }}</span></div>
+    </div>
+</body>
+</html>
