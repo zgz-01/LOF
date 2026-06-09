@@ -8,20 +8,20 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-            background: #0f1923;
-            color: #e0e6ed;
+            background: #f5f7fa;
+            color: #2c3e50;
             padding: 16px;
             min-height: 100vh;
         }
         .header {
             margin-bottom: 20px;
             padding-bottom: 12px;
-            border-bottom: 1px solid #1e3a5f;
+            border-bottom: 1px solid #e0e6ed;
         }
         .header h1 {
             font-size: 22px;
             font-weight: 600;
-            color: #4fc3f7;
+            color: #1565c0;
         }
         .header .sub {
             font-size: 13px;
@@ -30,96 +30,144 @@
         }
         .header .update-time {
             font-size: 12px;
-            color: #546e7a;
+            color: #90a4ae;
             margin-top: 2px;
         }
-        .filters {
+
+        /* 工具栏 */
+        .toolbar {
             display: flex;
             gap: 8px;
             margin-bottom: 16px;
             flex-wrap: wrap;
+            align-items: center;
+        }
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         .filters button {
             padding: 6px 14px;
-            border: 1px solid #1e3a5f;
-            background: #15202b;
-            color: #78909c;
+            border: 1px solid #d0d7de;
+            background: #ffffff;
+            color: #586069;
             border-radius: 16px;
             cursor: pointer;
             font-size: 13px;
             transition: all 0.2s;
         }
         .filters button.active {
-            background: #1e3a5f;
-            color: #4fc3f7;
-            border-color: #4fc3f7;
+            background: #e3f2fd;
+            color: #1565c0;
+            border-color: #1565c0;
         }
-        .filters button:hover { background: #1a2d42; }
+        .filters button:hover { background: #f0f4f8; }
+
+        /* 搜索框 */
+        .search-box {
+            flex: 1;
+            min-width: 160px;
+            max-width: 300px;
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 7px 12px 7px 32px;
+            border: 1px solid #d0d7de;
+            border-radius: 16px;
+            background: #ffffff;
+            color: #2c3e50;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box input:focus {
+            border-color: #1565c0;
+        }
+        .search-box input::placeholder {
+            color: #90a4ae;
+        }
+        .search-box .icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #90a4ae;
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        /* 基金卡片 */
         .card {
-            background: #15202b;
-            border: 1px solid #1e3a5f;
+            background: #ffffff;
+            border: 1px solid #e0e6ed;
             border-radius: 10px;
             padding: 12px 16px;
             margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background 0.2s;
+            transition: box-shadow 0.2s;
         }
-        .card:hover { background: #1a2d42; }
-        .card .left { flex: 1; }
-        .card .code { font-size: 12px; color: #546e7a; }
-        .card .name { font-size: 15px; font-weight: 500; margin: 2px 0; }
-        .card .info { font-size: 11px; color: #546e7a; }
-        .card .right { text-align: right; min-width: 100px; }
+        .card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .card .left { flex: 1; min-width: 0; }
+        .card .code { font-size: 12px; color: #90a4ae; }
+        .card .name { font-size: 15px; font-weight: 500; margin: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card .info { font-size: 11px; color: #90a4ae; }
+        .card .right { text-align: right; min-width: 100px; flex-shrink: 0; }
         .card .premium { font-size: 24px; font-weight: 700; }
-        .card .premium.red { color: #ef5350; }
-        .card .premium.orange { color: #ff9800; }
-        .card .premium.gold { color: #ffd54f; }
-        .card .premium.green { color: #66bb6a; }
-        .card .premium.blue { color: #42a5f5; }
-        .card .premium.purple { color: #ab47bc; }
-        .card .premium.gray { color: #546e7a; }
-        .card .premium-label { font-size: 11px; color: #546e7a; }
-        .card .nav-info { font-size: 11px; color: #37474f; margin-top: 2px; }
-        .loading { text-align: center; padding: 40px; color: #546e7a; }
-        .error { text-align: center; padding: 40px; color: #ef5350; }
-        .footer { text-align: center; padding: 20px; font-size: 12px; color: #37474f; }
+        .card .premium.red { color: #d32f2f; }
+        .card .premium.orange { color: #e65100; }
+        .card .premium.gold { color: #f57c00; }
+        .card .premium.green { color: #388e3c; }
+        .card .premium.blue { color: #1976d2; }
+        .card .premium.purple { color: #7b1fa2; }
+        .card .premium.gray { color: #90a4ae; }
+        .card .premium-label { font-size: 11px; color: #90a4ae; }
+        .loading { text-align: center; padding: 40px; color: #90a4ae; }
+        .error { text-align: center; padding: 40px; color: #d32f2f; }
+        .empty-search { text-align: center; padding: 40px; color: #90a4ae; font-size: 14px; }
+        .footer { text-align: center; padding: 20px; font-size: 12px; color: #90a4ae; }
         @media (max-width: 480px) {
             .card { flex-direction: column; align-items: flex-start; }
             .card .right { text-align: left; margin-top: 8px; min-width: auto; }
+            .search-box { max-width: none; }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>📊 LOF 基金溢价排行</h1>
-        <div class="sub">QDII/LOF/ETF 实时溢价率监控</div>
+        <div class="sub">QDII/LOF 实时溢价率监控</div>
         <div class="update-time" id="updateTime">加载中...</div>
     </div>
 
-    <div class="filters">
-        <button class="active" data-filter="all" onclick="setFilter('all')">全部</button>
-        <button data-filter="premium" onclick="setFilter('premium')">溢价</button>
-        <button data-filter="discount" onclick="setFilter('折价')">折价</button>
-        <button data-filter="high" onclick="setFilter('high')">高溢价 &gt;3%</button>
-        <button data-filter="us" onclick="setFilter('us')">美股QDII</button>
+    <div class="toolbar">
+        <div class="filters">
+            <button class="active" data-filter="all" onclick="setFilter('all')">全部</button>
+            <button data-filter="premium" onclick="setFilter('premium')">溢价 ↗</button>
+            <button data-filter="折价" onclick="setFilter('折价')">折价 ↘</button>
+            <button data-filter="high" onclick="setFilter('high')">高溢价 &gt;3%</button>
+        </div>
+        <div class="search-box">
+            <span class="icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="搜代码或名称..." oninput="onSearch()">
+        </div>
     </div>
 
     <div id="fundList"></div>
 
     <div class="footer">
-        ⚠️ 数据仅供参考，不构成投资建议 | 数据源: palmmicro.com + Yahoo Finance
+        ⚠️ 数据仅供参考，不构成投资建议 &nbsp;|&nbsp; 数据源: palmmicro.com + Yahoo Finance
     </div>
 
     <script>
-        // 美股QDII代码前缀
-        const US_FUNDS = new Set(['513100','513110','513390','513870','513500','513650',
-            '161125','159632','159941','159660','159696','513300','513050','164906',
-            '162411','162415','513350']);
-
         let allFunds = [];
         let currentFilter = 'all';
+        let searchText = '';
 
         function getPremiumClass(pct) {
             if (pct === null || pct === undefined) return 'gray';
@@ -138,12 +186,8 @@
         }
 
         function getSourceLabel(fund) {
-            if (fund.realtime_premium !== null && fund.realtime_premium !== undefined) {
-                return '实时';
-            }
-            if (fund.fair_premium !== null && fund.fair_premium !== undefined) {
-                return '参考';
-            }
+            if (fund.realtime_premium !== null && fund.realtime_premium !== undefined) return '实时';
+            if (fund.fair_premium !== null && fund.fair_premium !== undefined) return '参考';
             return '官方';
         }
 
@@ -151,21 +195,21 @@
             return fund.realtime_premium ?? fund.fair_premium ?? fund.official_premium;
         }
 
+        function matchSearch(fund) {
+            if (!searchText) return true;
+            const q = searchText.toLowerCase();
+            const code = (fund.code || '').toLowerCase();
+            const name = (fund.name || '').toLowerCase();
+            return code.includes(q) || name.includes(q);
+        }
+
         function filterFunds(filter) {
-            if (filter === 'all') return allFunds;
-            if (filter === 'premium') return allFunds.filter(f => (getDisplayPremium(f) || 0) > 0);
-            if (filter === '折价') return allFunds.filter(f => (getDisplayPremium(f) || 0) < 0);
-            if (filter === 'high') return allFunds.filter(f => (getDisplayPremium(f) || 0) > 3);
-            if (filter === 'us') {
-                return allFunds.filter(f => {
-                    const code = f.code.replace(/[A-Z]/g, '');
-                    for (const prefix of US_FUNDS) {
-                        if (code.startsWith(prefix) || f.code.endsWith(prefix)) return true;
-                    }
-                    return false;
-                });
-            }
-            return allFunds;
+            let list = allFunds;
+            if (filter === 'premium') list = list.filter(f => (getDisplayPremium(f) || 0) > 0);
+            else if (filter === '折价') list = list.filter(f => (getDisplayPremium(f) || 0) < 0);
+            else if (filter === 'high') list = list.filter(f => (getDisplayPremium(f) || 0) > 3);
+            if (searchText) list = list.filter(matchSearch);
+            return list;
         }
 
         function render() {
@@ -173,12 +217,14 @@
             const filtered = filterFunds(currentFilter);
 
             if (filtered.length === 0) {
-                list.innerHTML = '<div class="loading">暂无数据</div>';
+                list.innerHTML = searchText
+                    ? '<div class="empty-search">🔍 没有找到匹配的基金</div>'
+                    : '<div class="loading">暂无数据</div>';
                 return;
             }
 
             let html = '';
-            filtered.forEach((fund, i) => {
+            filtered.forEach((fund) => {
                 const pct = getDisplayPremium(fund);
                 const cls = getPremiumClass(pct);
                 const label = getSourceLabel(fund);
@@ -212,13 +258,18 @@
             render();
         }
 
+        function onSearch() {
+            searchText = document.getElementById('searchInput').value;
+            render();
+        }
+
         async function loadData() {
             try {
                 const resp = await fetch('/api/data');
                 const data = await resp.json();
-                
+
                 if (data.error) {
-                    document.getElementById('fundList').innerHTML = 
+                    document.getElementById('fundList').innerHTML =
                         `<div class="error">❌ ${data.error}</div>`;
                     return;
                 }
@@ -227,18 +278,17 @@
 
                 const ts = data.cached_at || data.timestamp;
                 if (ts) {
-                    document.getElementById('updateTime').textContent = 
+                    document.getElementById('updateTime').textContent =
                         `更新: ${ts.substring(0, 16)} | 共 ${data.count} 只基金`;
                 }
 
                 render();
             } catch (e) {
-                document.getElementById('fundList').innerHTML = 
+                document.getElementById('fundList').innerHTML =
                     `<div class="error">❌ 数据加载失败: ${e.message}</div>`;
             }
         }
 
-        // 每60秒自动刷新
         loadData();
         setInterval(loadData, 60000);
     </script>

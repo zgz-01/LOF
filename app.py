@@ -11,7 +11,7 @@ import threading
 from flask import Flask, render_template, jsonify
 
 from fetcher import fetch_palmmicro_lof_data, fetch_usd_cny_rate, fetch_yahoo_quote
-from config import ALL_FUNDS, INDEX_MAP, YAHOO_SYMBOLS, FUTURE_YAHOO_SYMBOLS
+from config import INDEX_MAP, YAHOO_SYMBOLS, FUTURE_YAHOO_SYMBOLS
 
 app = Flask(__name__)
 
@@ -154,6 +154,17 @@ def api_fund_detail(code):
     
     fund_config = INDEX_MAP.get(code)
     
+    # 找到对应指数和期货的Yahoo数据
+    yahoo_data = None
+    future_data = None
+    if fund_config:
+        idx_code = fund_config.index_code
+        if idx_code:
+            yahoo_data = data.get("yahoo_quotes", {}).get(idx_code)
+        fut_code = fund_config.pair_future
+        if fut_code:
+            future_data = data.get("future_quotes", {}).get(fut_code)
+
     return jsonify({
         "code": code,
         "name": info.get("name", ""),
@@ -173,6 +184,8 @@ def api_fund_detail(code):
             "official": info.get("official_nav"),
             "date": info.get("nav_date"),
         },
+        "yahoo": yahoo_data,
+        "future": future_data,
         "cny_rate": data.get("cny_rate"),
     })
 
